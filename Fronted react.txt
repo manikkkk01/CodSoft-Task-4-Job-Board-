@@ -1,0 +1,57 @@
+#step -1:-
+npx create-react-app client
+cd client
+
+step -2:-
+// src/components/JobList.js
+import React, { useState, useEffect } from 'react';
+
+const JobList = () => {
+  const [jobs, setJobs] = useState([]);
+
+  useEffect(() => {
+    fetch('/api/jobs')
+      .then(response => response.json())
+      .then(data => setJobs(data))
+      .catch(error => console.error(error));
+  }, []);
+
+  return (
+    <div>
+      <h1>Job Listings</h1>
+      <ul>
+        {jobs.map(job => (
+          <li key={job.id}>
+            <h2>{job.title}</h2>
+            <p>{job.company}</p>
+            <p>{job.location}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+};
+
+export default JobList;
+
+#step-3
+// src/App.js
+import React from 'react';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import JobList from './components/JobList';
+import JobDetails from './components/JobDetails';
+import JobForm from './components/JobForm';
+
+const App = () => {
+  return (
+    <Router>
+      <Routes>
+        <Route path="/" element={<JobList />} />
+        <Route path="/jobs/:id" element={<JobDetails />} />
+        <Route path="/post-job" element={<JobForm />} />
+      </Routes>
+    </Router>
+  );
+};
+
+export default App;
